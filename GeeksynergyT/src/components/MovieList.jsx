@@ -10,33 +10,27 @@ const MovieList = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios.get('http://www.omdbapi.com/', {
-          params: {
-            apikey: '4f4b140a',
-            s: 'movie'
-          }
+        const response = await fetch('https://hoblist.com/api/movieList', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            category: 'movies',
+            language: 'kannada',
+            genre: 'all',
+            sort: 'voting',
+          }),
         });
-
-        const moviesWithDetails = await Promise.all(response.data.Search.map(async (movie) => {
-          const detailsResponse = await axios.get('http://www.omdbapi.com/', {
-            params: {
-              apikey: '4f4b140a',
-              i: movie.imdbID
-            }
-          });
-          return { ...movie, ...detailsResponse.data, votes: 0 }; // Adding votes property initialized to 0
-        }));
-
-        setMovies(moviesWithDetails);
-        setLoading(false);
+        const data = await response.json();
+        setMovies(data.result);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setLoading(false);
       }
     };
-
     fetchMovies();
   }, []);
+     
 
   const handleVote = (imdbID, increment) => {
     setMovies(prevMovies => {
