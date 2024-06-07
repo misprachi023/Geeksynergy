@@ -1,4 +1,3 @@
-// src/components/SignUpForm.jsx
 import React, { useState } from 'react';
 import { Box, FormControl, FormLabel, Input, Button, Select } from '@chakra-ui/react';
 
@@ -18,6 +17,9 @@ const SignUpForm = ({ success, onSignUp }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Save form data to local storage
+    localStorage.setItem('formData', JSON.stringify(formData));
+    // Call onSignUp function
     onSignUp(formData);
   };
 

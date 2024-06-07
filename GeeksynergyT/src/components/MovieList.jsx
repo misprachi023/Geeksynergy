@@ -8,7 +8,9 @@ const MovieList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     const fetchMovies = async () => {
+      setLoading(true);
       try {
         const response = await fetch('https://hoblist.com/api/movieList', {
           method: 'POST',
@@ -22,8 +24,11 @@ const MovieList = () => {
             sort: 'voting',
           }),
         });
+        setLoading(false);
         const data = await response.json();
-        setMovies(data.result);
+        console.log(data)
+        setMovies(data?.result);
+      
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -32,27 +37,8 @@ const MovieList = () => {
   }, []);
      
 
-  const handleVote = (imdbID, increment) => {
-    setMovies(prevMovies => {
-      return prevMovies.map(movie => {
-        if (movie.imdbID === imdbID) {
-          return {
-            ...movie,
-            votes: increment ? movie.votes + 1 : movie.votes - 1
-          };
-        }
-        return movie;
-      });
-    });
-  };
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Spinner size="xl" />
-      </Box>
-    );
-  }
+ 
 
   return (
     <Box p={5}>
@@ -67,7 +53,7 @@ const MovieList = () => {
                 mb={2}
                 onClick={() => handleVote(movie.imdbID, true)}
               />
-              <Text fontSize="lg" fontWeight="bold">{movie.votes} Vote</Text>
+             <Text mt={2}>{movie.totalVoted}</Text>
               <IconButton
                 aria-label="Downvote"
                 icon={<FaArrowDown />}
@@ -75,13 +61,16 @@ const MovieList = () => {
                 onClick={() => handleVote(movie.imdbID, false)}
               />
             </Box>
-            <Image src={movie.Poster} alt={`${movie.Title} poster`} boxSize="150px" height={"300px"} objectFit="cover" />
+            <Image src={movie.poster} alt={`${movie.Title} poster`} boxSize="150px" height={"300px"} objectFit="cover" />
             <Box display={"flex"} flexDirection="column" justifyContent={"center"} alignItems={"flex-start"} p={5} >
-              <Heading size="md">{movie.Title}</Heading>
-              <Heading size="sm">Year: {movie.Year}</Heading>
-              <Text mt={2}>Genre: {movie.Genre}</Text>
-              <Text mt={2}>Director: {movie.Director}</Text>
-              <Text mt={2}>Rating: {movie.imdbRating}</Text>
+              <Heading size="md">{movie.title}</Heading>
+              <Heading size="sm">Year: {movie.year}</Heading>
+              <Text mt={2}>Genre: {movie.genre}</Text>
+              <Text mt={2}>Director: {movie.director}</Text>
+              <Text mt={2}>Language: {movie.language}</Text>
+              <Text mt={2}>View: {movie.pageViews} views</Text>
+              <Text mt={2}>Voted by {movie.totalVoted} people</Text>
+              
             </Box>
           </Flex>
           <Button width={"100%"} colorScheme="teal" onClick={() => window.open(`https://www.youtube.com/results?search_query=${movie.Title} trailer`, '_blank')}>

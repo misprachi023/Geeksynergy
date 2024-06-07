@@ -1,9 +1,16 @@
-// src/components/LoginForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
 
 const LoginForm = ({ onLogin, err, success }) => {
   const [formData, setFormData] = useState({ name: '', password: '' });
+
+  useEffect(() => {
+    // Retrieve form data from local storage if available
+    const storedFormData = localStorage.getItem('formData');
+    if (storedFormData) {
+      setFormData(JSON.parse(storedFormData));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
