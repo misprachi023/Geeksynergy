@@ -10,9 +10,8 @@ const MovieList = () => {
   useEffect(() => {
 
     const fetchMovies = async () => {
-      setLoading(true);
       try {
-        const response = await fetch('https://hoblist.com/api/movieList', {
+        const response = await fetch('https://geeksynergy-backend.onrender.com/api/movieList', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -24,19 +23,16 @@ const MovieList = () => {
             sort: 'voting',
           }),
         });
-        setLoading(false);
         const data = await response.json();
-        console.log(data)
         setMovies(data?.result);
-      
+        console.log(data.result);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error(error);
       }
     };
-    fetchMovies();
-  }, []);
-     
+    fetchMovies();   
 
+  }, []);
 
  
 
